@@ -4,19 +4,23 @@ import math
 def calcular_peso_bruto():
 
     # Ler a planilha
-    planilha3 = pd.read_excel('resultado.xlsx', usecols="A:AL")
+    planilha1 = pd.read_excel('Estrutura_Produtos_30_01_2025.xls',usecols="A:AL")
+    planilha2 = pd.read_excel('Estrutura_Produtos_30_01_20252.xls',usecols="A:AL")
+
+    # Concatenar as planilhas
+    planilhaConcatenada = pd.concat([planilha1,planilha2],ignore_index=False)
 
     # Lista das colunas que devem ser convertidas para float
     colunas_peso = ["Pes.Bruto", "Pes.Bruto.1", "Pes.Bruto.2", "Pes.Bruto.3","Qtde","Qtde.1","Qtde.2","Qtde.3"]
 
     # Converter colunas para float, substituindo erros (ex: strings com vírgulas)
     for col in colunas_peso:
-        planilha3[col] = planilha3[col].astype(str).str.replace(",", ".").astype(float)
+        planilhaConcatenada[col] = planilhaConcatenada[col].astype(str).str.replace(",", ".").astype(float)
 
         
     lista2 = []
     # Loop sobre as colunas
-    for _, row in planilha3.iterrows():
+    for _, row in planilhaConcatenada.iterrows():
         CódigodoProduto = row["Código do Produto"]
         DescriçãodoProduto = row["Descrição do produto"]
         GrupoN1 = row["Grupo N1"]
@@ -53,7 +57,8 @@ def calcular_peso_bruto():
             PesoBruto2 = 0.0
         if isinstance(PesoBruto3, float) and math.isnan(PesoBruto2):
             PesoBruto3 = 0.0
-
+        
+        # Adicionar os valores à lista
         lista = {"CódigodoProduto":CódigodoProduto, "DescriçãodoProduto":DescriçãodoProduto, "GrupoN1":GrupoN1, "CódigoN1":CódigoN1, "DescricaoN1":DescricaoN1, "Qtd":Qtd, "PesoBruto":PesoBruto, "GrupoN2":GrupoN2,"CódigoN2":CódigoN2, "DescricaoN2":DescricaoN2, "Qtd1":Qtd1, "PesoBruto1":PesoBruto1, "GrupoN3":GrupoN3, "CódigoN3":CódigoN3, "DescricaoN3":DescricaoN3, "Qtd2":Qtd2, "PesoBruto2":PesoBruto2, "GrupoN4":GrupoN4, "CódigoN4":CódigoN4, "DescricaoN4":DescricaoN4, "Qt3":Qt3, "PesoBruto3":PesoBruto3,"MultiPesoBruto":MultiPesoBruto,"MultiPesoBruto1":MultiPesoBruto1,"MultiPesoBruto2":MultiPesoBruto2}
 
         
@@ -64,10 +69,11 @@ def calcular_peso_bruto():
         if GrupoN1 in grupos or GrupoN2 in grupos or GrupoN3 in grupos or GrupoN4 in grupos:
 
             lista2.append(lista)
-           
+
+    
 
 
-    # Define the column names in a list
+    # Create a list of column names
     column_names = [
         "CódigodoProduto", "DescriçãodoProduto", "GrupoN1", "CódigoN1", 
         "DescricaoN1", "Qtd", "PesoBruto", "GrupoN2", "CódigoN2", 
@@ -92,13 +98,30 @@ def calcular_peso_bruto():
     de["SomaSe"] = de.groupby("CódigodoProduto")["MultiPesoBruto"].sum()
     de["SomaSe1"] = de.groupby("CódigodoProduto")["MultiPesoBruto1"].sum()
     de["SomaSe2"] = de.groupby("CódigodoProduto")["MultiPesoBruto2"].sum()
+    de["GrupoECódigo"] = (
+    de["GrupoN1"].astype(str) + "-" +
+    de["CódigoN1"].astype(str) + "-" +
+    de["GrupoN2"].astype(str) + "-" +
+    de["CódigoN2"].astype(str) + "-" +
+    de["GrupoN3"].astype(str) + "-" +
+    de["CódigoN3"].astype(str) + "-" +
+    de["GrupoN4"].astype(str) + "-" +
+    de["CódigoN4"].astype(str) + "-" +
+    de["CódigodoProduto"].astype(str)
+)
+    
+
+
+ 
+    
+    # Criar um novo DataFrame com as colunas desejadas
+    dg = pd.DataFrame(de)
+    # Remover duplicatas com base na coluna "CódigoConcatenado"
+    dg.drop_duplicates(subset=["GrupoECódigo"], inplace=True)
     
     # Salvar novamente no Excel
-    de.to_excel("resultado123.xlsx", index=False, engine="openpyxl")
+    dg.to_excel("resultado123.xlsx", index=False, engine="openpyxl")
 
-    print("Coluna adicionada com sucesso!")
+    
 
             
-
-
-

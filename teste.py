@@ -1,41 +1,39 @@
 import pandas as pd
 import sqlite3
+from Envio import calcular_peso_bruto
+# Chamar a função para calcular o peso bruto
+calcular_peso_bruto()
+# Carregar o arquivo Excel
+planilha1 = pd.read_excel('resultado123.xlsx')
 
 
-
-planilha1 = pd.read_excel('Estrutura_Produtos_30_01_2025.xls',usecols="A:AL")
-planilha2 = pd.read_excel('Estrutura_Produtos_30_01_20252.xls',usecols="A:AL")
-
-
-planilhaConcatenada = pd.concat([planilha1,planilha2],ignore_index=False)
-
-print(planilhaConcatenada)
-
-planilhaConcatenada.to_excel('resultado.xlsx',index=False)
-
-lista_tecnica = planilhaConcatenada
+# Criar conexão com o banco de dados
+lista_tecnica = planilha1
 lista_pedidos = pd.read_excel('Lista de pedidos.xlsx')
 
 
-
+# Criar conexão com o banco de dados
 conn = sqlite3.connect('Lista.db')
 cursor = conn.cursor()
-
+# Criar tabelas
 lista_tecnica.to_sql('lista_tecnica', conn, if_exists='replace', index=False)
 lista_pedidos.to_sql('lista_de_pedidos',conn,if_exists='replace',index=False)
 
-cursor.execute("SELECT lista_de_pedidos.Pedido,lista_tecnica.Produto,lista_tecnica.Descricao,lista_tecnica.Grupo,lista_tecnica.Cod,lista_tecnica.Codigo,lista_tecnica.Qtde,lista_tecnica.Descricao_comp,lista_de_pedidos.Qtd FROM lista_de_pedidos INNER JOIN lista_tecnica ON lista_de_pedidos.Codigo = lista_tecnica.Produto;")
+
+
+cursor.execute("SELECT lista_de_pedidos.Pedido,lista_tecnica.CódigodoProduto,lista_tecnica.DescriçãodoProduto,lista_tecnica.CódigoN1,lista_tecnica.DescricaoN1,lista_tecnica.Qtd,lista_tecnica.CódigoN2,lista_tecnica.DescricaoN2,lista_tecnica.Qtd1,lista_tecnica.CódigoN3,lista_tecnica.DescricaoN3,lista_tecnica.Qtd2,lista_tecnica.CódigoN4,lista_tecnica.DescricaoN4,lista_tecnica.Qt3,lista_tecnica.Somase,lista_tecnica.Somase1,lista_tecnica.Somase2 FROM lista_de_pedidos INNER JOIN lista_tecnica ON lista_de_pedidos.Codigo = lista_tecnica.CódigodoProduto;")
 
 
 
 nova_lista = []
+# Iterar sobre os resultados
 for linha in cursor.fetchall():
-    concatenado = f'{linha[0]}{linha[1]}{linha[4]}'
-    lista = {"Pedido":linha[0],"Produto":linha[1],"Descricao":linha[2],"Grupo":linha[3],"Cod":linha[4],"Codigo":linha[5],"Qtd":linha[6],"Descricao_comp":linha[7],"Qtd total":float(linha[8]*linha[6]),"CodConcatenado":concatenado}
+    lista = {"Pedido":linha[0],"Produto":linha[1],"Descricao":linha[2],"CódigoN1":linha[3],"DescricaoN1":linha[4],"Qtd":linha[5],"CódigoN2":linha[6],"DescricaoN2":linha[7],"Qtd1":linha[8],"CódigoN3":linha[9],"DescricaoN3":linha[10],"Qtd2":linha[11],"CódigoN4":linha[12],"DescricaoN4":linha[13],"Qt3":linha[14],"SomaSe":linha[15],"SomaSe1":linha[16],"SomaSe2":linha[17]}
     nova_lista.append(lista)
-    
+# Criar DataFrame com os resultados
 df =  pd.DataFrame(nova_lista)
-df.drop_duplicates(subset=['CodConcatenado']).to_excel("resultado.xlsx",index=False)
+# Exportar o DataFrame para um arquivo Excel
+df.to_excel("resultado.xlsx",index=False)
 
 
 
