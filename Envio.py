@@ -87,41 +87,25 @@ def calcular_peso_bruto():
     # Create DataFrame with named columns
     df = pd.DataFrame(lista2, columns=column_names)
 
+    df["SomaSe"] = df.groupby("CódigodoProduto")["MultiPesoBruto"].transform("sum")
+    df["SomaSe1"] = df.groupby("CódigodoProduto")["MultiPesoBruto1"].transform("sum")
+    df["SomaSe2"] = df.groupby("CódigodoProduto")["MultiPesoBruto2"].transform("sum")
+    df["GrupoECódigo"] = (
+    df["GrupoN1"].astype(str) + "-" +
+    df["CódigoN1"].astype(str) + "-" +
+    df["GrupoN2"].astype(str) + "-" +
+    df["CódigoN2"].astype(str) + "-" +
+    df["GrupoN3"].astype(str) + "-" +
+    df["CódigoN3"].astype(str) + "-" +
+    df["GrupoN4"].astype(str) + "-" +
+    df["CódigoN4"].astype(str) + "-" +
+    df["CódigodoProduto"].astype(str))
+
+    df.drop_duplicates(subset=["GrupoECódigo"], inplace=True)
+
     # Export to Excel with headers
     df.to_excel("resultado12.xlsx", index=False)
 
-
-    # Carregar o arquivo Excel
-    arquivo = "resultado12.xlsx"
-    de = pd.read_excel(arquivo, engine="openpyxl")  # engine é necessário para arquivos .xlsx
-
-    # Criar uma nova coluna e adicionar valores
-    de["SomaSe"] = de.groupby("CódigodoProduto")["MultiPesoBruto"].transform("sum")
-    de["SomaSe1"] = de.groupby("CódigodoProduto")["MultiPesoBruto1"].transform("sum")
-    de["SomaSe2"] = de.groupby("CódigodoProduto")["MultiPesoBruto2"].transform("sum")
-    de["GrupoECódigo"] = (
-    de["GrupoN1"].astype(str) + "-" +
-    de["CódigoN1"].astype(str) + "-" +
-    de["GrupoN2"].astype(str) + "-" +
-    de["CódigoN2"].astype(str) + "-" +
-    de["GrupoN3"].astype(str) + "-" +
-    de["CódigoN3"].astype(str) + "-" +
-    de["GrupoN4"].astype(str) + "-" +
-    de["CódigoN4"].astype(str) + "-" +
-    de["CódigodoProduto"].astype(str)
-)
-    
-
-
- 
-    
-    # Criar um novo DataFrame com as colunas desejadas
-    dg = pd.DataFrame(de)
-    # Remover duplicatas com base na coluna "CódigoConcatenado"
-    dg.drop_duplicates(subset=["GrupoECódigo"], inplace=True)
-    
-    # Salvar novamente no Excel
-    dg.to_excel("resultado123.xlsx", index=False, engine="openpyxl")
     
 
             

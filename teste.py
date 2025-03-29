@@ -4,7 +4,7 @@ from Envio import calcular_peso_bruto
 # Chamar a função para calcular o peso bruto
 calcular_peso_bruto()
 # Carregar o arquivo Excel
-planilha1 = pd.read_excel('resultado123.xlsx')
+planilha1 = pd.read_excel('resultado12.xlsx')
 
 
 # Criar conexão com o banco de dados
