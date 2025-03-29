@@ -1,1 +1,1 @@
-dg.drop_duplicates(subset=[concatenar.map(de)], inplace=True)
+grupos = [1, 2, 3, 4, 5, 6, 7, 13]
