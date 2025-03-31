@@ -2,13 +2,13 @@ import pandas as pd
 import sqlite3
 from Envio import calcular_peso_bruto
 # Chamar a função para calcular o peso bruto
-calcular_peso_bruto()
+# calcular_peso_bruto()
 # Carregar o arquivo Excel
-planilha1 = pd.read_excel('resultado12.xlsx')
+# planilha1 = pd.read_excel('resultado12.xlsx')
 
 
 # Criar conexão com o banco de dados
-lista_tecnica = planilha1
+lista_tecnica = calcular_peso_bruto()
 lista_pedidos = pd.read_excel('Lista de pedidos.xlsx')
 
 
