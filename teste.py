@@ -78,7 +78,7 @@ for linha in cursor.fetchall():
         "QtdMultiSomase1": (linha[16] or 0) * (linha[18] or 0),
         "QtdMultiSomase2": (linha[17] or 0) * (linha[18] or 0)
     }
-    nova_lista.append(lista)
+    
 
     nova_lista.append(lista)
 # Criar DataFrame com os resultados

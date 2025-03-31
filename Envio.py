@@ -101,7 +101,7 @@ def calcular_peso_bruto():
     df["CódigoN4"].astype(str) + "-" +
     df["CódigodoProduto"].astype(str))
 
-    # df.drop_duplicates(subset=["GrupoECódigo"], inplace=True)
+    df.drop_duplicates(subset=["GrupoECódigo"], inplace=True)
 
     # # Export to Excel with headers
     # df.to_excel("resultado12.xlsx", index=False)
